@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.AddEditRecipePage"
+             x:DataType="vm:AddEditRecipeViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <!-- Error Message -->
+            <Border IsVisible="{Binding HasError}"
+                    BackgroundColor="#FFF3F0"
+                    Stroke="{StaticResource Error}"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12">
+                <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource Error}" FontSize="13" />
+            </Border>
+
+            <!-- Recipe Name -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Recipe Name *" FontSize="14" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                    <Entry Text="{Binding RecipeName}" Placeholder="Enter recipe name" FontSize="16" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Description -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Description" FontSize="14" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                    <Editor Text="{Binding RecipeDescription}" Placeholder="Describe your recipe..." HeightRequest="80" FontSize="14" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Image URL -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Image URL" FontSize="14" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                    <Entry Text="{Binding RecipeImageUrl}" Placeholder="https://..." Keyboard="Url" FontSize="14" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Category Picker -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Category" FontSize="14" FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                    <Picker ItemsSource="{Binding CategoryOptions}"
+                            SelectedItem="{Binding SelectedCategory}"
+                            Title="Select category" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Cook Time / Prep Time / Servings -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                <VerticalStackLayout Spacing="6">
+                    <Label Text="Cook (min)" FontSize="12" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                    <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                        <Entry Text="{Binding CookTime}" Keyboard="Numeric" FontSize="14" />
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="6">
+                    <Label Text="Prep (min)" FontSize="12" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                    <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                        <Entry Text="{Binding PrepTime}" Keyboard="Numeric" FontSize="14" />
+                    </Border>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="2" Spacing="6">
+                    <Label Text="Servings" FontSize="12" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                    <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 10" Padding="4">
+                        <Entry Text="{Binding Servings}" Keyboard="Numeric" FontSize="14" />
+                    </Border>
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Ingredients Section -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Ingredients *" FontSize="16" FontAttributes="Bold"
+                      Style="{StaticResource SectionTitleLabel}" />
+
+                <!-- Add Ingredient Input -->
+                <Grid ColumnDefinitions="2*,*,*,Auto" ColumnSpacing="8">
+                    <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 8" Padding="2">
+                        <Entry Text="{Binding NewIngredientName}" Placeholder="Name" FontSize="13" />
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 8" Padding="2">
+                        <Entry Text="{Binding NewIngredientQuantity}" Placeholder="Qty" FontSize="13" />
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 8" Padding="2">
+                        <Entry Text="{Binding NewIngredientUnit}" Placeholder="Unit" FontSize="13" />
+                    </Border>
+                    <Button Grid.Column="3"
+                            Text="+"
+                            Command="{Binding AddIngredientCommand}"
+                            BackgroundColor="{StaticResource Secondary}"
+                            TextColor="White"
+                            WidthRequest="44" HeightRequest="44"
+                            CornerRadius="10" Padding="0" FontSize="20" />
+                </Grid>
+
+                <!-- Ingredients List -->
+                <CollectionView ItemsSource="{Binding Ingredients}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Ingredient">
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Delete"
+                                                   BackgroundColor="{StaticResource Error}"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AddEditRecipeViewModel}}, Path=RemoveIngredientCommand}"
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <Border Style="{StaticResource ElevatedCardBorder}"
+                                    StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark={StaticResource SurfaceDark}}"
+                                        Padding="12,8" Margin="0,2">
+                                    <Label FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Quantity}" FontAttributes="Bold" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding Unit}" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding Name}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Instructions Section -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Instructions *" FontSize="16" FontAttributes="Bold"
+                      Style="{StaticResource SectionTitleLabel}" />
+
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Border Style="{StaticResource ElevatedCardBorder}" StrokeShape="RoundRectangle 8" Padding="2">
+                        <Entry Text="{Binding NewInstructionStep}" Placeholder="Add a step..." FontSize="13" />
+                    </Border>
+                    <Button Grid.Column="1"
+                            Text="+"
+                            Command="{Binding AddInstructionCommand}"
+                            BackgroundColor="{StaticResource Secondary}"
+                            TextColor="White"
+                            WidthRequest="44" HeightRequest="44"
+                            CornerRadius="10" Padding="0" FontSize="20" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding InstructionSteps}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Delete"
+                                                   BackgroundColor="{StaticResource Error}"
+                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AddEditRecipeViewModel}}, Path=RemoveInstructionCommand}"
+                                                   CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <Border Style="{StaticResource ElevatedCardBorder}"
+                                    StrokeShape="RoundRectangle 8"
+                                        Padding="12,8" Margin="0,2">
+                                    <Label Text="{Binding .}" FontSize="13"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                </Border>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,10">
+                <Button Text="Cancel"
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}"
+                        CornerRadius="12" HeightRequest="50" FontAttributes="Bold" />
+                <Button Grid.Column="1"
+                        Text="Save Recipe"
+                        Command="{Binding SaveRecipeCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="12" HeightRequest="50" FontAttributes="Bold" />
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}" HorizontalOptions="Center" />
+
+            <BoxView HeightRequest="30" Color="Transparent" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

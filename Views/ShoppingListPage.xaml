@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.ShoppingListPage"
+             x:DataType="vm:ShoppingListViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Header Stats -->
+        <Border Style="{StaticResource ElevatedCardBorder}"
+            StrokeShape="RoundRectangle 12"
+                Margin="16,10"
+                Padding="16,12">
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <VerticalStackLayout HorizontalOptions="Center">
+                    <Label Text="{Binding TotalCount}"
+                           FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource Primary}" />
+                    <Label Text="Total" FontSize="11" HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+                <BoxView WidthRequest="1" BackgroundColor="{StaticResource Outline}" />
+                <VerticalStackLayout HorizontalOptions="Center">
+                    <Label Text="{Binding CheckedCount}"
+                           FontSize="22" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource Secondary}" />
+                    <Label Text="Done" FontSize="11" HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- Shopping Items List -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding LoadItemsCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView ItemsSource="{Binding ShoppingItems}"
+                            Margin="16,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ShoppingItem">
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Delete"
+                                               BackgroundColor="{StaticResource Error}"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShoppingListViewModel}}, Path=DeleteItemCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                                <Border Style="{StaticResource ElevatedCardBorder}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Margin="0,3"
+                                    Padding="12,10">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <CheckBox IsChecked="{Binding IsChecked}"
+                                              Color="{StaticResource Secondary}"
+                                              VerticalOptions="Center">
+                                        <CheckBox.Behaviors>
+                                            <!-- Toggling is handled via tap on the whole row -->
+                                        </CheckBox.Behaviors>
+                                    </CheckBox>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label FontSize="14"
+                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}">
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="{Binding Quantity}" FontAttributes="Bold" />
+                                                    <Span Text=" " />
+                                                    <Span Text="{Binding Unit}" />
+                                                    <Span Text=" " />
+                                                    <Span Text="{Binding Name}" />
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                        <Label Text="{Binding RecipeTitle, StringFormat='From: {0}'}"
+                                               FontSize="11"
+                                               TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                                               IsVisible="{Binding RecipeTitle, Converter={StaticResource StringNotEmptyConverter}}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ShoppingListViewModel}}, Path=ToggleItemCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Padding="40">
+                        <Label Text="🛒" FontSize="48" HorizontalOptions="Center" />
+                        <Label Text="Shopping list is empty"
+                               Style="{StaticResource SectionTitleLabel}" HorizontalTextAlignment="Center"
+                               FontSize="18" />
+                        <Label Text="Add ingredients from recipe pages"
+                               Style="{StaticResource MutedCaptionLabel}" HorizontalTextAlignment="Center"
+                               FontSize="14" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Bottom Actions -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,*" Padding="16,10" ColumnSpacing="12">
+            <Button Text="Clear Completed"
+                    Command="{Binding ClearCompletedCommand}"
+                    Style="{StaticResource GhostButton}"
+                    FontSize="13" />
+            <Button Grid.Column="1"
+                    Text="Clear All"
+                    Command="{Binding ClearAllCommand}"
+                    BackgroundColor="{StaticResource Error}"
+                    TextColor="White"
+                    CornerRadius="12" FontSize="13" FontAttributes="Bold" />
+        </Grid>
+    </Grid>
+</ContentPage>

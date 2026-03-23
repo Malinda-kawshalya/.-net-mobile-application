@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <RefreshView Command="{Binding LoadDataCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="22" Padding="18,16,18,24">
+
+                <!-- Header -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                    <VerticalStackLayout>
+                        <Label Text="Hello, Chef! 👋"
+                               Style="{StaticResource MutedCaptionLabel}"
+                               FontSize="15" />
+                        <Label Text="FlavorVault"
+                               Style="{StaticResource HeroTitleLabel}"
+                               FontSize="30" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="1"
+                            StrokeShape="RoundRectangle 25"
+                            WidthRequest="50"
+                            HeightRequest="50"
+                            BackgroundColor="{StaticResource SurfaceVariant}"
+                            VerticalOptions="Center">
+                        <Label Text="👤" FontSize="24" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <!-- Search Bar -->
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 14"
+                        Padding="4,0">
+                    <SearchBar Text="{Binding SearchText}"
+                               Placeholder="Search recipes..."
+                               SearchCommand="{Binding SearchCommand}"
+                               BackgroundColor="Transparent"
+                               CancelButtonColor="{StaticResource Primary}" />
+                </Border>
+
+                <!-- Featured Recipes Carousel -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Featured Recipes 🔥"
+                           Style="{StaticResource SectionTitleLabel}" />
+
+                    <CarouselView ItemsSource="{Binding FeaturedRecipes}"
+                                  HeightRequest="200"
+                                  PeekAreaInsets="20"
+                                  Loop="True">
+                        <CarouselView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Recipe">
+                                <Border StrokeShape="RoundRectangle 16"
+                                        Stroke="Transparent"
+                                        Margin="8,0"
+                                        BackgroundColor="Transparent">
+                                    <Grid>
+                                        <Image Source="{Binding ImageUrl}"
+                                               Aspect="AspectFill"
+                                               HeightRequest="200" />
+                                        <!-- Gradient overlay -->
+                                        <BoxView Color="#80000000"
+                                                 VerticalOptions="End"
+                                                 HeightRequest="80" />
+                                        <VerticalStackLayout VerticalOptions="End"
+                                                             Padding="16,10">
+                                            <Label Text="{Binding Title}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="White" />
+                                            <Label Text="{Binding Category}"
+                                                   FontSize="12"
+                                                   TextColor="#DDDDDD" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToRecipeDetailCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CarouselView.ItemTemplate>
+                    </CarouselView>
+                </VerticalStackLayout>
+
+                <!-- Categories Section -->
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Categories"
+                               Style="{StaticResource SectionTitleLabel}" />
+                        <Label Grid.Column="1"
+                               Text="See All"
+                               FontSize="14"
+                               TextColor="{StaticResource Primary}"
+                               VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToAllCategoriesCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding Categories}"
+                                    HeightRequest="110"
+                                    ItemsLayout="HorizontalList">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Category">
+                                <Border StrokeShape="RoundRectangle 12"
+                                        Stroke="{StaticResource Outline}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                                        WidthRequest="100"
+                                        Margin="4"
+                                        Padding="10">
+                                    <VerticalStackLayout Spacing="6"
+                                                         HorizontalOptions="Center"
+                                                         VerticalOptions="Center">
+                                        <Image Source="{Binding ImageUrl}"
+                                               HeightRequest="45"
+                                               WidthRequest="45"
+                                               Aspect="AspectFill" />
+                                        <Label Text="{Binding Name}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               HorizontalTextAlignment="Center"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                    </VerticalStackLayout>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToCategoryCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Recent Recipes -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Popular Recipes"
+                           Style="{StaticResource SectionTitleLabel}" />
+
+                    <CollectionView ItemsSource="{Binding RecentRecipes}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Recipe">
+                                <Border StrokeShape="RoundRectangle 12"
+                                        Stroke="{StaticResource Outline}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceLight}, Dark={StaticResource SurfaceDark}}"
+                                        Margin="0,4"
+                                        Padding="0">
+                                    <Grid ColumnDefinitions="120,*" HeightRequest="100">
+                                        <Border StrokeShape="RoundRectangle 12,0,0,12"
+                                                Stroke="Transparent">
+                                            <Image Source="{Binding ImageUrl}"
+                                                   Aspect="AspectFill"
+                                                   WidthRequest="120" />
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Padding="12,10"
+                                                             Spacing="4"
+                                                             VerticalOptions="Center">
+                                            <Label Text="{Binding Title}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="2"
+                                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                            <Label Text="{Binding Category}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource Secondary}" />
+                                            <HorizontalStackLayout Spacing="12">
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Label Text="⏱" FontSize="12" />
+                                                    <Label Text="{Binding CookTimeMinutes, StringFormat='{0} min'}"
+                                                           FontSize="12"
+                                                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4">
+                                                    <Label Text="⭐" FontSize="12" />
+                                                    <Label Text="{Binding Rating, StringFormat='{0:F1}'}"
+                                                           FontSize="12"
+                                                           TextColor="{StaticResource Tertiary}" />
+                                                </HorizontalStackLayout>
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=GoToRecipeDetailCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+                <!-- Loading -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                   IsVisible="{Binding IsBusy}"
+                                   Color="{StaticResource Primary}"
+                                   HorizontalOptions="Center" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

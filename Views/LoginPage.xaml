@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             x:Class="Recipes_app.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+            <!-- App Logo / Title -->
+            <VerticalStackLayout Spacing="5" HorizontalOptions="Center" Margin="0,40,0,20">
+                <Label Text="🍳"
+                       FontSize="64"
+                       HorizontalOptions="Center" />
+                <Label Text="FlavorVault"
+                      Style="{StaticResource HeroTitleLabel}"
+                      FontSize="32"
+                      TextColor="{StaticResource PrimaryDeep}"
+                       HorizontalOptions="Center" />
+                <Label Text="Your Recipe Collection"
+                      Style="{StaticResource MutedCaptionLabel}"
+                      FontSize="14"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Error Message -->
+            <Border IsVisible="{Binding HasError}"
+                    BackgroundColor="#FFF3F0"
+                    Stroke="{StaticResource Error}"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="{StaticResource Error}"
+                       FontSize="13" />
+            </Border>
+
+            <!-- Email -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Email"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 10"
+                        Padding="4">
+                    <Entry Text="{Binding Email}"
+                           Placeholder="Enter your email"
+                           Keyboard="Email"
+                           FontSize="16" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Password -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="Password"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 10"
+                        Padding="4">
+                    <Entry Text="{Binding Password}"
+                           Placeholder="Enter your password"
+                           IsPassword="True"
+                           FontSize="16" />
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Remember Me & Forgot Password -->
+            <Grid ColumnDefinitions="*,*">
+                <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                    <CheckBox IsChecked="{Binding RememberMe}"
+                              Color="{StaticResource Primary}" />
+                    <Label Text="Remember me"
+                           VerticalOptions="Center"
+                           FontSize="13"
+                           TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                </HorizontalStackLayout>
+                <Label Grid.Column="1"
+                       Text="Forgot Password?"
+                       TextColor="{StaticResource Primary}"
+                       FontSize="13"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <!-- Login Button -->
+            <Button Text="Login"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="16"
+                    CornerRadius="12"
+                    HeightRequest="50" />
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="{StaticResource Primary}"
+                               HorizontalOptions="Center" />
+
+            <!-- Register Link -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4" Margin="0,10,0,0">
+                <Label Text="Don't have an account?"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                <Label Text="Register"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToRegisterCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

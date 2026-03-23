@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.RecipeDetailPage"
+             x:DataType="vm:RecipeDetailViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+
+            <!-- Hero Image -->
+            <Grid HeightRequest="300">
+                <Image Source="{Binding Recipe.ImageUrl}"
+                       Aspect="AspectFill"
+                       HeightRequest="300" />
+                <!-- Gradient overlay -->
+                <BoxView Color="#60000000"
+                         VerticalOptions="Fill" />
+
+                <!-- Back button -->
+                <Border StrokeShape="RoundRectangle 20"
+                        BackgroundColor="#80000000"
+                        Stroke="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start"
+                        Margin="16,50,0,0">
+                    <Label Text="←"
+                           FontSize="20"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Favorite button -->
+                <Border StrokeShape="RoundRectangle 20"
+                        BackgroundColor="#80000000"
+                        Stroke="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Margin="0,50,16,0">
+                    <Label Text="{Binding IsFavorite, Converter={StaticResource FavoriteIconConverter}}"
+                           FontSize="20"
+                           TextColor="{StaticResource Error}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+                    </Label>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleFavoriteCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Title overlay -->
+                <VerticalStackLayout VerticalOptions="End" Padding="16,20">
+                    <Label Text="{Binding Recipe.Title}"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="White" />
+                    <Label Text="{Binding Recipe.Category}"
+                           FontSize="14"
+                           TextColor="#CCCCCC" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <!-- Recipe Info Cards -->
+            <Grid ColumnDefinitions="*,*,*"
+                  Padding="16,16"
+                  ColumnSpacing="12">
+                <!-- Cook Time -->
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="12,10">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="⏱" FontSize="24" HorizontalOptions="Center" />
+                        <Label Text="{Binding Recipe.CookTimeMinutes, StringFormat='{0} min'}"
+                               FontSize="13" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                        <Label Text="Cook Time" FontSize="10" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    </VerticalStackLayout>
+                </Border>
+                <!-- Servings -->
+                <Border Grid.Column="1"
+                    Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="12,10">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="🍽" FontSize="24" HorizontalOptions="Center" />
+                        <Label Text="{Binding ServingsAdjusted, StringFormat='{0}'}"
+                               FontSize="13" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                        <Label Text="Servings" FontSize="10" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    </VerticalStackLayout>
+                </Border>
+                <!-- Rating -->
+                <Border Grid.Column="2"
+                    Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="12,10">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Label Text="⭐" FontSize="24" HorizontalOptions="Center" />
+                        <Label Text="{Binding Recipe.Rating, StringFormat='{0:F1}'}"
+                               FontSize="13" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                               TextColor="{StaticResource Tertiary}" />
+                        <Label Text="Rating" FontSize="10" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Description -->
+            <VerticalStackLayout Padding="16,0" Spacing="6"
+                                 IsVisible="{Binding Recipe.Description, Converter={StaticResource StringNotEmptyConverter}}">
+                <Label Text="Description"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="18" />
+                <Label Text="{Binding Recipe.Description}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+            </VerticalStackLayout>
+
+            <!-- Servings Adjuster -->
+            <HorizontalStackLayout Padding="16,10" Spacing="12" HorizontalOptions="Center">
+                <Button Text="-"
+                        Command="{Binding DecrementServingsCommand}"
+                        BackgroundColor="{StaticResource Outline}"
+                        TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}"
+                        WidthRequest="40" HeightRequest="40"
+                        CornerRadius="20" Padding="0" FontSize="18" />
+                <Label Text="{Binding ServingsAdjusted, StringFormat='{0} servings'}"
+                       FontSize="16" FontAttributes="Bold" VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource OnBackgroundLight}, Dark={StaticResource OnBackgroundDark}}" />
+                <Button Text="+"
+                        Command="{Binding IncrementServingsCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        WidthRequest="40" HeightRequest="40"
+                        CornerRadius="20" Padding="0" FontSize="18" />
+            </HorizontalStackLayout>
+
+            <!-- Ingredients -->
+            <VerticalStackLayout Padding="16,10" Spacing="10">
+                <Label Text="Ingredients"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="18" />
+                <CollectionView ItemsSource="{Binding Ingredients}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Ingredient">
+                                <Border Style="{StaticResource ElevatedCardBorder}"
+                                    StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark={StaticResource SurfaceDark}}"
+                                    Padding="12,10"
+                                    Margin="0,3">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Label Text="•"
+                                           FontSize="16"
+                                           TextColor="{StaticResource Primary}"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,8,0" />
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="4">
+                                        <Label Text="{Binding Quantity}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                        <Label Text="{Binding Name}"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Instructions -->
+            <VerticalStackLayout Padding="16,10" Spacing="10">
+                <Label Text="Instructions"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="18" />
+                <CollectionView ItemsSource="{Binding Instructions}"
+                                x:Name="InstructionsView">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                                <Border Style="{StaticResource ElevatedCardBorder}"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="12"
+                                    Margin="0,4">
+                                <HorizontalStackLayout Spacing="12">
+                                    <Border StrokeShape="RoundRectangle 14"
+                                            BackgroundColor="{StaticResource Primary}"
+                                            Stroke="Transparent"
+                                            WidthRequest="28"
+                                            HeightRequest="28"
+                                            VerticalOptions="Start">
+                                        <Label Text="✓"
+                                               FontSize="12"
+                                               TextColor="White"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+                                    <Label Text="{Binding .}"
+                                           FontSize="14"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="FillAndExpand" />
+                                </HorizontalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*" Padding="16,20" ColumnSpacing="12">
+                <Button Text="❤️ Favorite"
+                        Command="{Binding ToggleFavoriteCommand}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceVariant}, Dark={StaticResource SurfaceDark}}"
+                        TextColor="{StaticResource Primary}"
+                        CornerRadius="12"
+                        FontSize="14"
+                        FontAttributes="Bold" />
+                <Button Grid.Column="1"
+                        Text="🛒 Add to List"
+                        Command="{Binding AddToShoppingListCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        CornerRadius="12"
+                        FontSize="14"
+                        FontAttributes="Bold" />
+            </Grid>
+
+            <!-- Bottom spacing -->
+            <BoxView HeightRequest="30" Color="Transparent" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

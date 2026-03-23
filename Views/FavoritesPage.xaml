@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.FavoritesPage"
+             x:DataType="vm:FavoritesViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <RefreshView Command="{Binding LoadFavoritesCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <CollectionView ItemsSource="{Binding FavoriteRecipes}"
+                        Margin="16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Recipe">
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Remove"
+                                           BackgroundColor="{StaticResource Error}"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FavoritesViewModel}}, Path=RemoveFavoriteCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Border Style="{StaticResource ElevatedCardBorder}"
+                            StrokeShape="RoundRectangle 12"
+                                Margin="0,4"
+                                Padding="0">
+                            <Grid ColumnDefinitions="120,*" HeightRequest="100">
+                                <Border StrokeShape="RoundRectangle 12,0,0,12"
+                                        Stroke="Transparent">
+                                    <Image Source="{Binding ImageUrl}"
+                                           Aspect="AspectFill"
+                                           WidthRequest="120" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Padding="12,10"
+                                                     Spacing="4"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Title}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2"
+                                           TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                                    <Label Text="{Binding Category}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource Secondary}" />
+                                    <HorizontalStackLayout Spacing="12">
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="⏱" FontSize="12" />
+                                            <Label Text="{Binding CookTimeMinutes, StringFormat='{0} min'}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="4">
+                                            <Label Text="⭐" FontSize="12" />
+                                            <Label Text="{Binding Rating, StringFormat='{0:F1}'}"
+                                                   FontSize="12"
+                                                   TextColor="{StaticResource Tertiary}" />
+                                        </HorizontalStackLayout>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Grid>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FavoritesViewModel}}, Path=GoToRecipeDetailCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Padding="40">
+                    <Label Text="❤️" FontSize="48" HorizontalOptions="Center" />
+                    <Label Text="No favorites yet"
+                           Style="{StaticResource SectionTitleLabel}" HorizontalTextAlignment="Center"
+                           FontSize="18" />
+                    <Label Text="Start adding recipes to your favorites!"
+                           Style="{StaticResource MutedCaptionLabel}" HorizontalTextAlignment="Center"
+                           FontSize="14" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

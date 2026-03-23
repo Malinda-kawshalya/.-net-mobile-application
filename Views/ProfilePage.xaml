@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             x:Class="Recipes_app.Views.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="20">
+
+            <!-- Profile Header -->
+            <VerticalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,20,0,10">
+                <Border StrokeShape="RoundRectangle 50"
+                        WidthRequest="100"
+                        HeightRequest="100"
+                        BackgroundColor="{StaticResource SurfaceVariant}"
+                        Stroke="{StaticResource Primary}"
+                        StrokeThickness="3"
+                        HorizontalOptions="Center">
+                    <Label Text="👨‍🍳"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+                <Label Text="{Binding DisplayName}"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="22"
+                       HorizontalTextAlignment="Center"
+                      />
+                <Label Text="{Binding Email}"
+                      Style="{StaticResource MutedCaptionLabel}"
+                      FontSize="14"
+                       HorizontalTextAlignment="Center"
+                      />
+                <Label Text="{Binding MemberSince}"
+                      Style="{StaticResource MutedCaptionLabel}"
+                      FontSize="12"
+                       HorizontalTextAlignment="Center"
+                      />
+            </VerticalStackLayout>
+
+            <!-- Settings Section -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Settings"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="18"
+                       Margin="0,0,0,8"
+                      />
+
+                <!-- Dark Mode Toggle -->
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="16,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Label Text="🌙" FontSize="22" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                            <Label Text="Dark Mode"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                            <Label Text="Switch between light and dark theme"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="2"
+                                IsToggled="{Binding IsDarkMode}"
+                                OnColor="{StaticResource Primary}"
+                                VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <!-- Edit Profile -->
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="16,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Label Text="✏️" FontSize="22" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                            <Label Text="Edit Profile"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                            <Label Text="Update your personal information"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="›" FontSize="22"
+                               TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding EditProfileCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- About Section -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="About"
+                      Style="{StaticResource SectionTitleLabel}"
+                      FontSize="18"
+                       Margin="0,0,0,8"
+                      />
+
+                <Border Style="{StaticResource ElevatedCardBorder}"
+                    StrokeShape="RoundRectangle 12"
+                        Padding="16,12">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Label Text="ℹ️" FontSize="22" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" Margin="12,0" VerticalOptions="Center">
+                            <Label Text="FlavorVault"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource OnSurfaceLight}, Dark={StaticResource OnSurfaceDark}}" />
+                            <Label Text="Version 1.0 — Built with .NET MAUI"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray500}, Dark={StaticResource Gray300}}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Logout / Login Button -->
+            <Button Text="Logout"
+                    IsVisible="{Binding IsLoggedIn}"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="{StaticResource Error}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="50"
+                    Margin="0,10">
+            </Button>
+
+            <Button Text="Login"
+                    IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBoolConverter}}"
+                    Command="{Binding GoToLoginCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="50"
+                    Margin="0,10" />
+
+            <BoxView HeightRequest="30" Color="Transparent" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

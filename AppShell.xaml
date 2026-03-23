@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Recipes_app.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:Recipes_app.Views"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource TabBarBackgroundLight}, Dark={StaticResource TabBarBackgroundDark}}"
+    Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource TabBarSelectedLight}, Dark={StaticResource TabBarSelectedDark}}"
+    Shell.TabBarTitleColor="{AppThemeBinding Light={StaticResource TabBarSelectedLight}, Dark={StaticResource TabBarSelectedDark}}"
+    Shell.TabBarUnselectedColor="{AppThemeBinding Light={StaticResource TabBarUnselectedLight}, Dark={StaticResource TabBarUnselectedDark}}"
+    Shell.NavBarHasShadow="False"
+    Title="FlavorVault">
+
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            Icon="tab_home.svg"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="HomePage" />
+
+        <ShellContent
+            Title="Saved"
+            Icon="tab_favorites.svg"
+            ContentTemplate="{DataTemplate views:FavoritesPage}"
+            Route="FavoritesPage" />
+
+        <ShellContent
+            Title="Create"
+            Icon="tab_add.svg"
+            ContentTemplate="{DataTemplate views:AddEditRecipePage}"
+            Route="AddEditRecipePage" />
+
+        <ShellContent
+            Title="List"
+            Icon="tab_shopping.svg"
+            ContentTemplate="{DataTemplate views:ShoppingListPage}"
+            Route="ShoppingListPage" />
+
+        <ShellContent
+            Title="Profile"
+            Icon="tab_profile.svg"
+            ContentTemplate="{DataTemplate views:ProfilePage}"
+            Route="ProfilePage" />
+    </TabBar>
+
+</Shell>

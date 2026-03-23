@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Recipes_app.ViewModels"
+             xmlns:models="clr-namespace:Recipes_app.Models"
+             x:Class="Recipes_app.Views.CategoriesPage"
+             x:DataType="vm:CategoriesViewModel"
+             Title="{Binding Title}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource BackgroundLight}, Dark={StaticResource BackgroundDark}}">
+
+    <RefreshView Command="{Binding LoadCategoriesCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <CollectionView ItemsSource="{Binding Categories}"
+                        Margin="16">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2"
+                                 HorizontalItemSpacing="12"
+                                 VerticalItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Category">
+                        <Border Style="{StaticResource ElevatedCardBorder}"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="12"
+                            HeightRequest="160">
+                        <VerticalStackLayout Spacing="8"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center">
+                            <Border StrokeShape="RoundRectangle 40"
+                                    Stroke="Transparent"
+                                    WidthRequest="80"
+                                    HeightRequest="80"
+                                    HorizontalOptions="Center">
+                                <Image Source="{Binding ImageUrl}"
+                                       Aspect="AspectFill"
+                                       WidthRequest="80"
+                                       HeightRequest="80" />
+                            </Border>
+                            <Label Text="{Binding Name}"
+                                Style="{StaticResource SectionTitleLabel}"
+                                FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CategoriesViewModel}}, Path=SelectCategoryCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="10" Padding="40">
+                    <Label Text="🍽️" FontSize="48" HorizontalOptions="Center" />
+                    <Label Text="Loading categories..."
+                           Style="{StaticResource MutedCaptionLabel}"
+                           FontSize="16"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
